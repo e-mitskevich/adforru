@@ -17,6 +17,7 @@ from django.urls import reverse
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+IS_LOCAL = sys.platform.startswith('win') or sys.platform.startswith('darwin')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -91,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "adforru",
         "USER": "root",
-        "PASSWORD": "root"
+        "PASSWORD": "root" if IS_LOCAL else ">X)C7yYrwS]F9.;."
     }
 }
 
