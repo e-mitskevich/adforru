@@ -1,0 +1,44 @@
+{% extends "layouts/cabinet.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Ваши сайты{% endblock %}
+{% block h1 %}Ваши сайты{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Сайты" "cabinet_sites_index" %}
+{% endblock %}
+
+{% block content %}
+
+    <a href="{% url "cabinet_sites_add" %}">Новый сайт</a>
+    {% if sites %}
+        <table>
+            <thead>
+                <tr>
+                    <td>Название</td>
+                    <td>URL страницы</td>
+                    <td>Блоков</td>
+                    <td>Контент-ключей</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for site in sites %}
+                <tr>
+                    <td><a href="{% url "cabinet_sites_show" site.id %}">{{ site.title }}</a></td>
+                    <td><a href="{{ site.page_url }}" target="_blank">{{ site.page_url }}</a></td>
+                    <td><a href="{% url "cabinet_sites_show" site.id %}">{{ site.tags.count }}</a></td>
+                    <td><a href="{% url "cabinet_sites_show" site.id %}">{{ site.contentkeys.count }}</a></td>
+                    <td>
+                        <a href="{% url "cabinet_sites_edit" site.id %}">Редактировать</a>
+                        <a class="confirm" href="{% url "cabinet_sites_delete" site.id %}">Удалить</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url "cabinet_sites_add" %}">Новый сайт</a>
+    {% endif %}
+
+{% endblock %}

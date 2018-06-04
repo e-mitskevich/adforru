@@ -1,0 +1,54 @@
+{% load django_bootstrap_breadcrumbs %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static "styles/cabinet.css" %}"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="{% static "scripts/cabinet.js" %}"></script>
+
+    <title>{% block title %}Default title{% endblock %}</title>
+</head>
+<body>
+
+    {% if messages %}
+        <ul id="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <header>
+        {% block header %}
+            <div style="text-align: center">
+                <span style="font-size: 50px">Личный кабинет <a href="/">Adfor.ru</a></span>
+                <div style="float: right;">
+                    <b style="color: black;">{{ request.user.username }}</b>
+                    <a href="{% url "cabinet_logout" %}">Выйти</a>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        {% endblock %}
+    </header>
+
+    <div class="breadcrumbs">
+        {% block breadcrumbs %}
+            {% clear_breadcrumbs %}
+            {% breadcrumb "Личный кабинет" "/cabinet" %}
+        {% endblock %}
+        {% render_breadcrumbs "includes/breadcrumbs.html" %}
+    </div>
+
+    <h1>{% block h1 %}{% endblock %}</h1>
+    <div class="content">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+</body>
+</html>

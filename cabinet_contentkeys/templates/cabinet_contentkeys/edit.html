@@ -1,0 +1,26 @@
+{% extends "layouts/cabinet.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}{% if key_id %}Редактирование контент-ключа{% else %}Новый контент-ключ{% endif %}{% endblock %}
+{% block h1 %}{% if key_id %}Редактирование контент-ключа{% else %}Новый контент-ключ{% endif %}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Сайты" "cabinet_sites_index" %}
+    {% breadcrumb site.title "cabinet_sites_show" site.id %}
+    {% if tag_id %}
+        {% breadcrumb_for "" %}Контент-ключ {{ contentkey.param_value }}{% endbreadcrumb_for %}
+    {% else %}
+        {% breadcrumb "Новый контент-ключ" "" %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <input type="submit"/>
+    </form>
+{% endblock %}

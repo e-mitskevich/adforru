@@ -1,0 +1,44 @@
+{% extends "layouts/cabinet.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}Статистика по контент-ключам{% endblock%}
+{% block h1 %}Статистика по контент-ключам{% endblock%}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Сайты" "cabinet_sites_index" %}
+    {% breadcrumb site.title "cabinet_sites_show" site.id %}
+    {% breadcrumb "Статистика по контент ключам" "" %}
+{% endblock %}
+
+{% block content %}
+
+    <div style="border: 1px solid green; padding: 15px;">
+        Для трекинга целевых действий используйте пиксель:<br/>
+        &lt;script src="http://{{ DOMAIN }}{% url "cabinet_sites_conversion_js" site.id %}"&gt;&lt;/script&gt;
+    </div>
+    <br/>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Ключ</td>
+                <td>Уникальных юзеров</td>
+                <td>Просмотров страницы</td>
+                <td>Целевых действий</td>
+                <td>CVR, %</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contentkey in site.contentkeys.all %}
+                <tr>
+                    <td>{{ contentkey.param_value }}</td>
+                    <td>{{ contentkey.unique_users }}</td>
+                    <td>{{ contentkey.pageviews }}</td>
+                    <td>{{ contentkey.conversions }}</td>
+                    <td>{{ contentkey.cvr }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

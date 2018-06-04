@@ -1,0 +1,90 @@
+{% extends "layouts/cabinet.html" %}
+{% load django_bootstrap_breadcrumbs custom_tags %}
+
+{% block title %}Сайт {{ site.title }}{% endblock %}
+{% block h1 %}Сайт {{ site.title }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Сайты" "cabinet_sites_index" %}
+    {% breadcrumb site.title "cabinet_sites_show" site.id %}
+{% endblock %}
+
+{% block content %}
+
+    {% if contentkeys %}
+        <h3><a href="{% url "cabinet_contentkeys_index" site.id %}">Статистика по контент-ключам</a></h3>
+
+        <div style="border: 1px solid green; padding: 15px;">
+            Вставьте этот код перед закрывающим тегом &lt;/body&gt; вашего сайта:<br/>
+            &lt;script src="http://{{ DOMAIN }}{% url "cabinet_sites_hypercontent_js" site.id %}"&gt;&lt;/script&gt;
+        </div>
+        <br/>
+    {% endif %}
+
+    <div id="contentkeys" style="text-align: center">
+        <span style="color: #bbb;">Ваш URL:</span> <span style="font-size: 25px">{{ site.page_url }}?{{ contentkey_get_param }}=</span>
+        {% if site.contentkeys.exists %}
+            <select>
+                {% for contentkey in site.contentkeys.all %}
+                    <option {% if request.GET|lookup:contentkey_get_param == contentkey.param_value %}selected="selected"{% endif %}>
+                        {{ contentkey.param_value }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% for contentkey in site.contentkeys.all %}
+                {% if request.GET|lookup:contentkey_get_param == contentkey.param_value %}
+                    <a href="{% url "cabinet_contentkeys_edit" site.id contentkey.id %}">ред</a>
+                    <a class="confirm" href="{% url "cabinet_contentkeys_delete" site.id contentkey.id %}">уд</a>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <a href="{% url "cabinet_contentkeys_add" site.id %}">Добавить контент-ключ</a>
+    </div>
+
+    <script>
+        $("#contentkeys select").on("change", function(e) {
+            {#var $container = $(this).parents("#contentkeys");#}
+            window.location.href = window.location.href.split("?")[0] + "?{{ contentkey_get_param }}=" + $(this).val();
+        });
+    </script>
+
+
+
+
+
+
+    <br/>
+    {% if not tags %}Блоки на странице:{% endif %} <a href="{% url "cabinet_tags_add" site.id %}">Новый блок</a>
+    {% if tags %}
+        <form method="post" action="">
+            {% csrf_token %}
+            <input type="submit" value="Сохранить значения"/>
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <td>Название</td>
+                        <td>Селектор</td>
+                        <td>Значение</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for tag in tags %}
+                    <tr>
+                        <td>{{ tag.title }}</td>
+                        <td>{{ tag.selector }}</td>
+                        <td>{{ tag.form.value }}</td>
+                        <td>
+                            <a href="{% url "cabinet_tags_edit" site.id tag.id %}">Редактировать</a>
+                            <a class="confirm" href="{% url "cabinet_tags_delete" site.id tag.id %}">Удалить</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <input type="submit" value="Сохранить значения"/>
+        </form>
+        <a href="{% url "cabinet_tags_add" site.id %}">Новый блок</a>
+    {% endif %}
+{% endblock %}

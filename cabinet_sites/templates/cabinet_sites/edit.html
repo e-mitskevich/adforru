@@ -1,0 +1,25 @@
+{% extends "layouts/cabinet.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block title %}{% if site_id %}Редактирование сайта{% else %}Новый сайт{% endif %}{% endblock %}
+{% block h1 %}{% if site_id %}Редактирование сайта{% else %}Новый сайт{% endif %}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Сайты" "cabinet_sites_index" %}
+    {% if site_id %}
+        {% breadcrumb site.title "" %}
+    {% else %}
+        {% breadcrumb "Новый сайт" "" %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <input type="submit"/>
+    </form>
+{% endblock %}

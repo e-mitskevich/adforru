@@ -1,0 +1,12 @@
+{% extends "layouts/cabinet.html" %}
+
+{% block title %}Регистрация{% endblock %}
+{% block h1 %}Регистрация{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+{% endblock %}
