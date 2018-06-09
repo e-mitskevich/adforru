@@ -12,6 +12,9 @@ def home(request):
     return render(request, "index/home.html", locals())
 
 
+COOKIE_NAME = "firsttds_mark"
+
+
 def tracker(request):
     redirect_to = request.GET["lp"]
 
@@ -25,9 +28,10 @@ def tracker(request):
 
         ip=request.META.get("REMOTE_ADDR", ""),
         useragent=request.META.get("HTTP_USER_AGENT", ""),
-        cookie_mark=request.COOKIES.get("firsttds_mark", "")
+        cookie_mark=request.COOKIES.get(COOKIE_NAME, "")
     ).save()
 
     response = HttpResponseRedirect(redirect_to)
-    response.set_cookie("firsttds_mark", str(uuid.uuid1()))
+    mark = request.COOKIES.get(COOKIE_NAME, str(uuid.uuid1()))
+    response.set_cookie("firsttds_mark", mark, domain=request.META.get("HTTP_HOST", "").split(":")[0])
     return response
