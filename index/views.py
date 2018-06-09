@@ -16,6 +16,7 @@ def tracker(request):
     redirect_to = request.GET["lp"]
 
     TrackerLogEntry(
+        request_url=request.build_absolute_uri(),
         request_get=json.dumps(request.GET),
         request_post=json.dumps(request.POST),
         request_files=json.dumps(request.FILES),
