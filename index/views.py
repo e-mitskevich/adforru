@@ -33,5 +33,5 @@ def tracker(request):
 
     response = HttpResponseRedirect(redirect_to)
     mark = request.COOKIES.get(COOKIE_NAME, str(uuid.uuid1()))
-    response.set_cookie("firsttds_mark", mark, domain=request.META.get("HTTP_HOST", "").split(":")[0])
+    response.set_cookie(COOKIE_NAME, mark, domain=request.META.get("HTTP_HOST", "").split(":")[0])
     return response
