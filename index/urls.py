@@ -9,6 +9,7 @@ from index import views
 
 urlpatterns = [
     path('', views.home, name='index_home'),
+    path('tracker', views.tracker, name='index_tracker'),
 ]
 
 
