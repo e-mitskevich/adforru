@@ -77,11 +77,11 @@ def get_rifma(text, words):
     for i in range(1, min(5, len(words)) + 1):
         word = words[-i]
         slogs = to_slogs(word)
-        print(word + " -> " + str(slogs))
+        # print(word + " -> " + str(slogs))
         if len(slogs) != 3 or word.endswith("й") or word not in words_base:
             continue
 
-        print(words_base[word])
+        # print(words_base[word])
 
         udarenie_na_vtoroi = not list(filter(lambda piece: slogs[1] in piece, words_base[word]))
         if udarenie_na_vtoroi:
