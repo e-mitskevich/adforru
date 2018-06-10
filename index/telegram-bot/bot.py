@@ -24,7 +24,7 @@ with open(os.path.join(base_dir, 'config.json'), 'r') as f:
     PASSWORD = config['password']
 
 
-with open(os.path.join('words.json'), 'r') as f:
+with open(os.path.join(base_dir, 'words.json'), 'r') as f:
     words_base = json.load(f)
 
 
