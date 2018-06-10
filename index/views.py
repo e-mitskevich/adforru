@@ -59,3 +59,7 @@ def ebay(request):
     result = requests.get(url).text
 
     return render(request, "index/ebay.html", locals())
+
+
+def telegram(request):
+    pass
