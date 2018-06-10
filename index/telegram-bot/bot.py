@@ -5,19 +5,17 @@ import json
 import os
 import re
 
-import sys
 import telepot
 import time
 from telepot.loop import MessageLoop
 
-from adfor.settings import BASE_DIR
 
 CHAT_ID_EUGENE_MITSKEVICH = 136483796
 CHAT_ID_TEST_GROUP = -278932543
 CHAT_ID_KRASIVO = -304487349
 
 
-base_dir = os.path.join(BASE_DIR, "index", "telegram-bot")
+base_dir = os.path.dirname(__file__)
 
 
 with open(os.path.join(base_dir, 'config.json'), 'r') as f:
