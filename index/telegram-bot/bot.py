@@ -4,6 +4,7 @@
 import json
 import os
 import re
+import traceback
 
 import telepot
 import time
@@ -114,7 +115,7 @@ def handle(msg):
             if response is not None:
                 bot.sendMessage(CHAT_ID_TEST_GROUP, response, parse_mode="HTML")
     except Exception as exc:
-        print("EXCEPTION: " + exc)
+        traceback.print_exc()
 
 
 bot = telepot.Bot(TOKEN)
