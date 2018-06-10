@@ -10,19 +10,23 @@ import telepot
 import time
 from telepot.loop import MessageLoop
 
+from adfor.settings import BASE_DIR
 
 CHAT_ID_EUGENE_MITSKEVICH = 136483796
 CHAT_ID_TEST_GROUP = -278932543
 CHAT_ID_KRASIVO = -304487349
 
 
-with open('config.json', 'r') as f:
+base_dir = os.path.join(BASE_DIR, "index", "telegram-bot")
+
+
+with open(os.path.join(base_dir, 'config.json'), 'r') as f:
     config = json.load(f)
     TOKEN = config['token']
     PASSWORD = config['password']
 
 
-with open('words.json', 'r') as f:
+with open(os.path.join('words.json'), 'r') as f:
     words_base = json.load(f)
 
 
