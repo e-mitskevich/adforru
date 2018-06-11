@@ -86,7 +86,7 @@ def get_rifma(text, words):
         word = words[-i]
         slogs = to_slogs(word)
 
-        print(word + " -> " + "".join(slogs))
+        # print(word + " -> " + "".join(slogs))
         print("Word exists: %s" % (word in words_base))
 
         if len(slogs) not in (2, 3) or word.endswith("й") or word not in words_base:
