@@ -6,9 +6,13 @@ import os
 import re
 import traceback
 
+import sys
 import telepot
 import time
 from telepot.loop import MessageLoop
+
+
+IS_LOCAL = ("darwin" in sys.platform)
 
 
 CHAT_ID_EUGENE_MITSKEVICH = 136483796
@@ -86,16 +90,19 @@ def get_rifma(text, words):
         word = words[-i]
         slogs = to_slogs(word)
 
-        # print(word + " -> " + "".join(slogs))
-        print("Word exists: %s" % (word in words_base))
+        if IS_LOCAL:
+            print(word + " -> " + "".join(slogs))
+            print("Word exists: %s" % (word in words_base))
 
         if len(slogs) not in (2, 3) or word.endswith("й") or word not in words_base:
             continue
 
         rifma = None
         udarnyi_slog = get_udarnyi_slog(word, slogs)
-        print("Pieces from base: %s" % words_base[word])
-        print("Udarnui slog: %s" % udarnyi_slog)
+
+        if IS_LOCAL:
+            print("Pieces from base: %s" % words_base[word])
+            print("Udarnui slog: %s" % udarnyi_slog)
 
         if len(slogs) == 2:
             if udarnyi_slog == 1:
