@@ -65,6 +65,21 @@ def to_slogs(word):
     return slogs
 
 
+def udarnyi_slog(word, slogs):
+    i = 0
+    while i < len(slogs):
+        if not list(filter(lambda piece: slogs[i] in piece, words_base[word])):
+            break
+        i += 1
+    return i + 1
+
+
+words = ["гиппопотам", "батут", "бабушка"]
+for word in words:
+    slogs = to_slogs(word)
+    print("%s -> %s" % (word, udarnyi_slog(word, slogs)))
+
+
 def get_rifma(text, words):
 
     if text.endswith("кто?"):
@@ -81,10 +96,7 @@ def get_rifma(text, words):
         if len(slogs) != 3 or word.endswith("й") or word not in words_base:
             continue
 
-        # print(words_base[word])
-
-        udarenie_na_vtoroi = not list(filter(lambda piece: slogs[1] in piece, words_base[word]))
-        if udarenie_na_vtoroi:
+        if udarnyi_slog(word, slogs) == 2:
             glasnaya = slogs[-2][-1]
             return word + " - ху" + HUI_MAPPING.get(glasnaya, glasnaya) + slogs[-1] + "!"
 
@@ -108,12 +120,12 @@ def handle(msg):
 
         words = re.findall("[а-яА-Я0-9]+", text)
         if words:
-            bot.forwardMessage(CHAT_ID_TEST_GROUP, chat_id, msg['message_id'])
+            bot.forwardMessage(CHAT_ID_EUGENE_MITSKEVICH, chat_id, msg['message_id'])
             # bot.sendMessage(CHAT_ID_TEST_GROUP, ",".join(to_slogs(last_word)), parse_mode="HTML")
 
             response = get_rifma(text, words)
             if response is not None:
-                bot.sendMessage(CHAT_ID_TEST_GROUP, response, parse_mode="HTML")
+                bot.sendMessage(CHAT_ID_EUGENE_MITSKEVICH, response, parse_mode="HTML")
     except Exception as exc:
         traceback.print_exc()
 
