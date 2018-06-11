@@ -12,7 +12,6 @@ from telepot.loop import MessageLoop
 
 
 CHAT_ID_EUGENE_MITSKEVICH = 136483796
-CHAT_ID_TEST_GROUP = -278932543
 CHAT_ID_KRASIVO = -304487349
 
 
@@ -65,19 +64,13 @@ def to_slogs(word):
     return slogs
 
 
-def udarnyi_slog(word, slogs):
+def get_udarnyi_slog(word, slogs):
     i = 0
     while i < len(slogs):
         if not list(filter(lambda piece: slogs[i] in piece, words_base[word])):
             break
         i += 1
     return i + 1
-
-
-words = ["гиппопотам", "батут", "бабушка"]
-for word in words:
-    slogs = to_slogs(word)
-    print("%s -> %s" % (word, udarnyi_slog(word, slogs)))
 
 
 def get_rifma(text, words):
@@ -92,21 +85,33 @@ def get_rifma(text, words):
     for i in range(1, min(5, len(words)) + 1):
         word = words[-i]
         slogs = to_slogs(word)
-        # print(word + " -> " + str(slogs))
-        if len(slogs) != 3 or word.endswith("й") or word not in words_base:
+
+        print(word + " -> " + str(slogs))
+        print("Word exists: %s" % (word in words_base))
+
+        if len(slogs) not in (2, 3) or word.endswith("й") or word not in words_base:
             continue
 
-        if udarnyi_slog(word, slogs) == 2:
-            glasnaya = slogs[-2][-1]
-            return word + " - ху" + HUI_MAPPING.get(glasnaya, glasnaya) + slogs[-1] + "!"
+        rifma = None
+        udarnyi_slog = get_udarnyi_slog(word, slogs)
+        print("Pieces from base: %s" % words_base[word])
+        print("Udarnui slog: %s" % udarnyi_slog)
 
-        glasnaya = slogs[0][-1]
-        if len(slogs) > 3:
-            slogs = [slogs[0]] + slogs[-2:]
-            glasnaya = "ё"
-        slogs_rest = len(slogs) - 1
-        return word + " - ху" + HUI_MAPPING.get(glasnaya, glasnaya) + "".join(slogs[-slogs_rest:]) + "!"
+        if len(slogs) == 2:
+            if udarnyi_slog == 1:
+                glasnaya = slogs[0][-1]
+                rifma = "ху" + HUI_MAPPING.get(glasnaya, glasnaya) + slogs[1]
 
+        if len(slogs) == 3:
+            if udarnyi_slog == 1:
+                glasnaya = slogs[0][-1]
+                rifma = "ху" + HUI_MAPPING.get(glasnaya, glasnaya) + slogs[1] + slogs[2]
+            elif udarnyi_slog == 2:
+                glasnaya = slogs[1][-1]
+                rifma = "ху" + HUI_MAPPING.get(glasnaya, glasnaya) + slogs[2]
+
+        if rifma is not None:
+            return word + " - " + rifma + "!"
     return None
 
 
@@ -120,12 +125,18 @@ def handle(msg):
 
         words = re.findall("[а-яА-Я0-9]+", text)
         if words:
-            bot.forwardMessage(CHAT_ID_EUGENE_MITSKEVICH, chat_id, msg['message_id'])
-            # bot.sendMessage(CHAT_ID_TEST_GROUP, ",".join(to_slogs(last_word)), parse_mode="HTML")
-
             response = get_rifma(text, words)
             if response is not None:
-                bot.sendMessage(CHAT_ID_EUGENE_MITSKEVICH, response, parse_mode="HTML")
+                # print(msg)
+                # print(msg['chat']['type'])
+                if msg['chat']['type'] != 'private':
+                    # print("Channel")
+                    # if chat_id != CHAT_ID_EUGENE_MITSKEVICH:
+                    bot.forwardMessage(CHAT_ID_EUGENE_MITSKEVICH, chat_id, msg['message_id'])
+                    bot.sendMessage(CHAT_ID_EUGENE_MITSKEVICH, response, parse_mode="HTML")
+                else:
+                    # print("Net")
+                    bot.sendMessage(chat_id, response, parse_mode="HTML")
     except Exception as exc:
         traceback.print_exc()
 
