@@ -3,6 +3,7 @@
 
 import json
 import os
+import random
 import re
 import traceback
 
@@ -30,6 +31,10 @@ HUI_MAPPING = {
     "ы": "и",
     "у": "ю"
 }
+
+
+def probability(value):
+    return (random.uniform(0, 1) < value)
 
 
 def has_glasnye(text):
@@ -133,10 +138,13 @@ def get_rifma(text, words):
                 print("Udarnui slog pervyi: %s" % udarnyi_slog_pervui)
 
             if udarnyi_slog_pervui:
-                glasnaya = slogs[0][-1]
-                rifma = "ху" + HUI_MAPPING.get(glasnaya, glasnaya) + slogs[1]
-                if len(slogs) == 3:
-                    rifma += slogs[2]
+                if len(slogs) == 2 and word == corrected_word and probability(0.75):
+                    return ["А " + word + " жарииит", "Кууууууур!"]
+                else:
+                    glasnaya = slogs[0][-1]
+                    rifma = "ху" + HUI_MAPPING.get(glasnaya, glasnaya) + slogs[1]
+                    if len(slogs) == 3:
+                        rifma += slogs[2]
 
         if rifma is not None:
             return word + " - " + rifma + "!"
@@ -160,7 +168,12 @@ def handle(msg):
                 #     bot.forwardMessage(CHAT_ID_EUGENE_MITSKEVICH, chat_id, msg['message_id'])
                 #     bot.sendMessage(CHAT_ID_EUGENE_MITSKEVICH, response, parse_mode="HTML")
                 # else:
-                bot.sendMessage(chat_id, response, parse_mode="HTML")
+                if isinstance(response, list):
+                    bot.sendMessage(chat_id, response[0], parse_mode="HTML")
+                    time.sleep(2)
+                    bot.sendMessage(chat_id, response[1], parse_mode="HTML")
+                else:
+                    bot.sendMessage(chat_id, response, parse_mode="HTML")
     except Exception as exc:
         traceback.print_exc()
 
