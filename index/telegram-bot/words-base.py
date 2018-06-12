@@ -43,20 +43,39 @@ words = OrderedDict()
 
 def add_from_source(url, is_additional=False):
     print("Fetching " + url if not is_additional else "Fetching ADDITIONAL " + url)
-    content = str(requests.get(url).content, "utf-8")
-    local_words = re.findall("<BIG>(.*?)<b>(.*?)</b>(.*?)</BIG>", content, re.IGNORECASE)
-    print("%s words" % len(local_words))
-    for word_pieces in local_words:
-        word = "".join(word_pieces)
-        if word not in words:
-            word_pieces = list(map(lambda slog: slog.lower(), word_pieces))
-            words[word] = word_pieces
+    content = str(requests.get(url).content, "utf-8").lower()
 
-    relative_url = url.split("/")[-1].split(".")[0]
+
+    count0 = len(words)
+    local_words = re.findall("<big>(.*?)<b>(.*?)</b>(.*?)</big>", content)
+    for word_pieces in local_words:
+        if word_pieces[0] == "":
+            word_pieces = word_pieces[1:]
+        if word_pieces[-1] == "":
+            word_pieces = word_pieces[:-1]
+        word = "".join(word_pieces)
+
+        if word not in words:
+            words[word] = word_pieces
+    print("%s words" % (len(words) - count0))
+
+    count0 = len(words)
+    local_words = re.findall("<big>(.*?)</big>", content)
+    # print(local_words[0])
+    for word in local_words:
+        if "<b>" not in word and word not in words:
+            words[word] = word
+    print("%s words" % (len(words) - count0))
+
+    relative_url_parts = url.split("/")[-1].split(".")[0].split("-")
+    relative_url_part = relative_url_parts[-2] + "-" + relative_url_parts[-1]
 
     additional_urls = set()
-    for additional_url in re.findall(relative_url + "_(.*?)\"", content, re.MULTILINE):
-        additional_urls.add("http://povto.ru/books/slovari/orfograficheskiy-slovar-online/" + relative_url + "_" + additional_url.split("#")[0])
+    for additional_url in re.findall("\"((.*?)%s_(.*?))\"" % relative_url_part, content, re.MULTILINE):
+        additional_url = additional_url[0].split("#")[0]
+        if not additional_url.startswith("http://"):
+            additional_url = "http://povto.ru/books/slovari/orfograficheskiy-slovar-online/" + additional_url
+        additional_urls.add(additional_url)
 
     if additional_urls:
         print("%s additional urls" % len(additional_urls))
