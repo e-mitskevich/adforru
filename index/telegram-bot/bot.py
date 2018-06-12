@@ -84,7 +84,7 @@ def correct_for_base(word):
             if tmp in words_base:
                 return tmp
 
-    endings = ("и", "е", "ы", "у", "а")
+    endings = ("е", "у", "а")
     for ending in endings:
         if word.endswith(ending):
             tmp = word[:-len(ending)]
